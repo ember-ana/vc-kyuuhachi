@@ -7,7 +7,7 @@ import { ComponentDispatch, Forms, useEffect, useRef } from "@webpack/common";
 import type { ComponentType, HTMLAttributes, PropsWithChildren, RefObject } from "react";
 
 type FocusLock = ComponentType<PropsWithChildren<{
-    containerRef: RefObject<HTMLElement>
+    containerRef: RefObject<HTMLElement>;
 }>>;
 
 const { FocusLock } = proxyLazy(() => Forms as any as {
@@ -51,8 +51,8 @@ export default definePlugin({
         {
             find: "},DefaultCustomContentScroller:function(){return ",
             replacement: {
-                match: /(?<=Fragment,\{children:)\w+\(\((\w+),\w+\)=>(\(0,\w+\.jsxs\))\(\w+\.animated\.div,\{style:\1,/,
-                replace: "($2(\"div\",{"
+                match: /(?<=Fragment,\{children:\w+\(\((\w+),\w+\)=>(\(0,\w+\.jsxs\))\(\w+\.animated\.div),\{style:\1,/,
+                replace: ",{"
             }
         },
         { // load menu stuff on hover, not on click
@@ -86,7 +86,7 @@ export default definePlugin({
             style={{ opacity: hidden ? 0 : undefined }}
             {...props}
         />;
-        if(baseLayer) return node;
+        if (baseLayer) return node;
         else return <FocusLock containerRef={containerRef}>{node}</FocusLock>;
     },
 });
