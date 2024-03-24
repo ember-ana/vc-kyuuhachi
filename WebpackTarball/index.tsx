@@ -9,10 +9,10 @@ import TarFile from "./tar";
 import * as Webpack from "./webpack";
 
 export const settings = definePluginSettings({
-    usePatched: {
+    patched: {
         type: OptionType.BOOLEAN,
         default: true,
-        description: "Include Vencord patches",
+        description: "Include patched modules",
         restartNeeded: true,
     },
 });
@@ -24,7 +24,7 @@ export default definePlugin({
     settings,
 
     toolboxActions: {
-        async "Webpack Tarball"() {
+        "Webpack Tarball"() {
             const key = openModal(props => (
                 <TarModal
                     modalProps={props}
@@ -47,23 +47,31 @@ export const getBuildNumber = makeLazy(() => {
     }
 });
 
-function saveTar(usePatched: boolean) {
+function saveTar(patched: boolean) {
     const tar = new TarFile();
     const { buildNumber, builtAt } = getBuildNumber();
     const mtime = (builtAt.getTime() / 1000)|0;
+    // wreq.m is missing a few modules for unknown reasons, so need to grab them like this
     const webpack = window.webpackChunkdiscord_app as any[];
-    const modules: { [id: string]: any } = Object.assign({}, ...webpack.map(a => a[1]));
+    const modules: Record<string, any> = Object.assign({}, ...webpack.map(a => a[1]));
 
-    const root = usePatched ? `vencord-${buildNumber}` : `discord-${buildNumber}`;
+    const root = patched ? `vencord-${buildNumber}` : `discord-${buildNumber}`;
 
-    Object.entries(modules).forEach(([id, module]) => {
-        module = usePatched ? module : (module.original ?? module);
+    for(const [id, module] of Object.entries(modules)) {
+        const patchedSrc = module.toString();
+        const originalSrc = (module.original ?? module).toString();
+        if(patched && patchedSrc != originalSrc)
+            tar.addTextFile(
+                `${root}/${id}.v.js`,
+                `webpack[${JSON.stringify(id)}] = ${patchedSrc}\n`,
+                { mtime },
+            );
         tar.addTextFile(
             `${root}/${id}.js`,
-            `webpack[${JSON.stringify(id)}] = ${module.toString()}\n`,
+            `webpack[${JSON.stringify(id)}] = ${originalSrc}\n`,
             { mtime },
         );
-    });
+    }
     tar.save(`${root}.tar`);
 }
 
@@ -79,6 +87,7 @@ function TarModal({ modalProps, close }: { modalProps: ModalProps; close(): void
     const loaded = status.filter(v => v === 0 || v === undefined).length;
     const errored = status.filter(v => v === undefined).length;
     const all = Object.keys(paths).length;
+    const { patched } = settings.use(["patched"]);
     return (
         <ModalRoot {...modalProps}>
             <ModalHeader>
@@ -124,18 +133,18 @@ function TarModal({ modalProps, close }: { modalProps: ModalProps; close(): void
                 </div>
 
                 <Switch
-                    value={settings.use(["usePatched"]).usePatched}
-                    onChange={(v: boolean) => settings.store.usePatched = v}
+                    value={patched}
+                    onChange={v => settings.store.patched = v}
                     hideBorder
                 >
-                    {settings.def.usePatched.description}
+                    {settings.def.patched.description}
                 </Switch>
             </ModalContent>
 
             <ModalFooter>
                 <Button
                     onClick={() => {
-                        saveTar(settings.store.usePatched);
+                        saveTar(patched);
                         close();
                     }}
                 >

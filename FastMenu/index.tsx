@@ -7,7 +7,7 @@ import { ComponentDispatch, Forms, useEffect, useRef } from "@webpack/common";
 import type { ComponentType, HTMLAttributes, PropsWithChildren, RefObject } from "react";
 
 type FocusLock = ComponentType<PropsWithChildren<{
-    containerRef: RefObject<HTMLElement>;
+    containerRef: RefObject<HTMLElement>
 }>>;
 
 const { FocusLock } = proxyLazy(() => Forms as any as {
@@ -86,7 +86,7 @@ export default definePlugin({
             style={{ opacity: hidden ? 0 : undefined }}
             {...props}
         />;
-        if (baseLayer) return node;
+        if(baseLayer) return node;
         else return <FocusLock containerRef={containerRef}>{node}</FocusLock>;
     },
 });
