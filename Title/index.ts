@@ -1,4 +1,5 @@
 import { definePluginSettings } from "@api/Settings";
+import { Devs } from "@utils/constants";
 import definePlugin, { OptionType } from "@utils/types";
 import { findByPropsLazy } from "@webpack";
 
@@ -22,15 +23,15 @@ function setTitle(v: string) {
 export default definePlugin({
     name: "Title",
     description: "Replaces the window title prefix",
-    authors: [{ id: 236588665420251137n, name: "Kyuuhachi" }],
+    authors: [Devs.Kyuuhachi],
     settings,
 
     patches: [
         {
             find: "setPageTitleNotificationCount:function()",
             replacement: {
-                match: /\{base:\w+\.isPlatformEmbedded\?void 0:"Discord"\}/,
-                replace: "$self.rootTitle",
+                match: /(?<==)(?={base:)/,
+                replace: "$self.rootTitle??",
             },
         },
     ],

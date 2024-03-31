@@ -1,3 +1,4 @@
+import { Devs } from "@utils/constants";
 import { proxyLazy } from "@utils/lazy";
 import definePlugin from "@utils/types";
 import { findByPropsLazy } from "@webpack";
@@ -18,8 +19,8 @@ const { useModalContext, useModalsStore } = proxyLazy(() => Forms as any as {
     }>>,
 });
 
-const Spring = findByPropsLazy("a", "animated", "useTransition");
-const AppLayer = findByPropsLazy("AppLayerContainer", "AppLayerProvider");
+const { animated, useSpring, useTransition } = findByPropsLazy("a", "animated", "useTransition");
+const { default: AppLayer } = findByPropsLazy("AppLayerContainer", "AppLayerProvider");
 
 const ANIMS = {
     SUBTLE: {
@@ -39,13 +40,13 @@ const ANIMS = {
 export default definePlugin({
     name: "ModalFade",
     description: "Makes modals fade the backdrop, rather than dimming",
-    authors: [{ id: 236588665420251137n, name: "Kyuuhachi" }],
+    authors: [Devs.Kyuuhachi],
 
     patches: [
         {
             find: "contextMenuCallbackNative,!1",
             replacement: {
-                match: /(?<=children:\[\(0,\i\.jsx\)\()"div"(?=,\{className:\i\(\i\?)/,
+                match: /(?<=\()"div"(?=,\{className:\i\(\)\(\i\?\i\.mobileApp:\i.app\))/,
                 replace: "$self.MainWrapper",
             }
         },
@@ -59,7 +60,7 @@ export default definePlugin({
     ],
 
     nullTransition(value: any, args: object) {
-        return Spring.useTransition(value, {
+        return useTransition(value, {
             ...args,
             from: {},
             enter: { _: 0 }, // Spring gets unhappy if there's zero animations
@@ -70,15 +71,15 @@ export default definePlugin({
     MainWrapper(props: object) {
         const context = useModalContext();
         const modals = useModalsStore(modals => modals[context] ?? []);
-        const modal = modals.findLast(modal => modal.Layer == null || modal.Layer === AppLayer.default);
+        const modal = modals.findLast(modal => modal.Layer == null || modal.Layer === AppLayer);
         const anim = ANIMS[modal?.backdropStyle ?? "DARK"];
         const isInstant = modal?.instant;
         const prevIsInstant = usePrevious(isInstant);
-        const style = Spring.useSpring({
+        const style = useSpring({
             config: { duration: isInstant || prevIsInstant ? 0 : 300 },
             ...modal != null ? anim.on : anim.off,
         });
-        return <Spring.animated.div style={style} {...props} />;
+        return <animated.div style={style} {...props} />;
     }
 });
 

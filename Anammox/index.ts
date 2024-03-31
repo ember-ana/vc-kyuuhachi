@@ -1,4 +1,5 @@
 import { definePluginSettings } from "@api/Settings";
+import { Devs } from "@utils/constants";
 import definePlugin, { OptionType } from "@utils/types";
 
 export const settings = definePluginSettings({
@@ -31,7 +32,7 @@ export const settings = definePluginSettings({
 export default definePlugin({
     name: "Anammox",
     description: "A microbial process that plays an important part in the nitrogen cycle",
-    authors: [{ id: 236588665420251137n, name: "Kyuuhachi" }],
+    authors: [Devs.Kyuuhachi],
     settings,
 
     patches: [
@@ -76,14 +77,6 @@ export default definePlugin({
             replacement: {
                 match: /if\(\w+\)return null;/,
                 replace: "return null;",
-            },
-            predicate: () => settings.store.gift,
-        },
-        { // Gift button in DM profile sidebar
-            find: "Messages.MUTUAL_GUILDS_COUNT",
-            replacement: {
-                match: /\(0,\w+\.jsx\)\("div",\{className:\w+\.giftButtonContainer/,
-                replace: "false&&$&",
             },
             predicate: () => settings.store.gift,
         },
