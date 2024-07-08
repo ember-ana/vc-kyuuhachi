@@ -56,6 +56,7 @@
     { "name": "ContextMenu", "include": ["colorPremiumGradient", "hideInteraction", "menu", "radioSelection", "submenuPaddingContainer"] },
     { "name": "ConnectedAccounts", "include": ["connectedAccounts", "connectedAccountContainerWithMetadata", "discordMemberCreatedAt"] },
     { "name": "Desaturate", "include": ["desaturate", "desaturateUserColors", "lowSaturationUnderline"] },
+    { "name": "DevToolsContainer", "include": ["mobileContainerExpanded", "resizeHandle", "sidebarContent"] },
     { "name": "Embed", "include": ["embedProvider", "embedVideo"] },
     { "name": "EmojiContainer", "include": ["emojiContainer", "emojiContainerClickable"] },
     { "name": "EmojiPicker", "include": ["burstToggle", "emojiPicker", "inspector", "searchBarFullRow"] },
