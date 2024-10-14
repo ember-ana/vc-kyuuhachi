@@ -2,10 +2,10 @@ import Plugins, { PluginMeta } from "~plugins";
 
 const PLUGINS = [
     require("./Anammox").default,
-    require("./ColorMessage").default,
     require("./DeadMembers").default,
     require("./MessageLinkTooltip").default,
     require("./ModalFade").default,
+    require("./MoreThemes").default,
     require("./NotificationTitle").default,
     require("./TeX").default,
     require("./Title").default,
