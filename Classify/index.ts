@@ -25,11 +25,10 @@ export default definePlugin({
 
     patches: [
         {
-            // Let's patch react itself. What's the worst that can happen?
-            find: ",this.attributeNamespace=",
+            find: "case\"dangerouslySetInnerHTML\":throw",
             replacement: {
-                match: /,(\w+\?\w+\.setAttributeNS\((\w+),(\w+),(\w+)\):)/,
-                replace: ',(!$2&&$3==="class"&&($4=$self.remap($4))),$1',
+                match: /case"className":(\w+)\((\w+),"class",(\w+)\);/,
+                replace: 'case"className":$1($2,"class",$self.remap($3));'
             },
         },
     ],
