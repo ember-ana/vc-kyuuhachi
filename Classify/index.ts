@@ -1,3 +1,4 @@
+import { Devs } from "@utils/constants";
 import { Logger } from "@utils/Logger";
 import definePlugin, { StartAt } from "@utils/types";
 import * as Webpack from "@webpack";
@@ -21,14 +22,22 @@ STYLE.id = "_98classify";
 export default definePlugin({
     name: "Classify",
     description: "Adds css-friendly class names.",
-    authors: [{ id: 236588665420251137n, name: "Kyuuhachi" }],
+    authors: [Devs.Kyuuhachi],
 
     patches: [
         {
+            // Let's patch react itself. What's the worst that can happen?
+            /*
             find: "case\"dangerouslySetInnerHTML\":throw",
             replacement: {
                 match: /case"className":(\w+)\((\w+),"class",(\w+)\);/,
                 replace: 'case"className":$1($2,"class",$self.remap($3));'
+            },
+            */
+            find: '.DetermineComponentFrameRoot.displayName="DetermineComponentFrameRoot"',
+            replacement: {
+                match: /(?<=\i\(\i,"class",)\i(?=\);)/,
+                replace: "$self.remap($&)",
             },
         },
     ],
