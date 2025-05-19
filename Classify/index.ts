@@ -28,7 +28,7 @@ export default definePlugin({
         {
             // Let's patch react itself. What's the worst that can happen?
             /*
-            find: "case\"dangerouslySetInnerHTML\":throw",
+            find: 'case"dangerouslySetInnerHTML":throw',
             replacement: {
                 match: /case"className":(\w+)\((\w+),"class",(\w+)\);/,
                 replace: 'case"className":$1($2,"class",$self.remap($3));'
