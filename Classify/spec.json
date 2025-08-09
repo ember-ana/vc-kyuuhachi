@@ -41,6 +41,7 @@
     { "name": "BrowseChannelsPick", "include": ["browser", "createButton", "pageBody"] },
     { "name": "Button", "include": ["fullWidth", "hoverBrand", "submitting"] },
     { "name": "Channel", "include": ["channelTextArea", "chat", "guildBreadcrumbIcon", "threadSidebarOpen"] },
+    { "name": "ChannelAppLauncher", "include": ["channelAppLauncher", "entrypointAnimation", "animationGlow"] },
     { "name": "ChannelEditor", "include": ["fontSize12Padding", "sansAttachButtonCreateThread", "sparkles"] },
     { "name": "ChannelEditor2", "include": ["editor", "placeholder"], "exact": true },
     { "name": "ChannelEditor3", "include": ["applicationCommand", "inlineVoid", "newLine"] },
